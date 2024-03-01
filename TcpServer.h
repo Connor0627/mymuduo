@@ -4,10 +4,12 @@
  * 用户使用muduo编写服务器程序
  */
 #include "Acceptor.h"
+#include "Buffer.h"
 #include "Callbacks.h"
 #include "EventLoop.h"
 #include "EventLoopThreadPool.h"
 #include "InetAddress.h"
+#include "TcpConnection.h"
 #include "noncopyable.h"
 #include <atomic>
 #include <functional>

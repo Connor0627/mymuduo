@@ -66,7 +66,6 @@ void EPollPoller::updateChannel(Channel *channel) {
     }
 }
 
-// 从poller中删除channel
 void EPollPoller::removeChannel(Channel *channel) {
     int fd = channel->fd();
     channels_.erase(fd);

@@ -66,19 +66,22 @@ class Channel : noncopyable {
     void set_index(int idx) { index_ = idx; }
 
     EventLoop *ownerLoop() { return loop_; }
+    // 在channel所属的EventLoop中，把当前的channel删除掉
     void remove();
 
   private:
+    // 当改变channel所表示fd的events事件后，update负责在poller里面更改fd相应的事件epoll_ctl
     void update();
+    // 根据poller通知的channel发生的具体事件，由channel负责调用具体的回调操作
     void handleEventWithGuard(Timestamp receiveTime);
     static const int kNoneEvent;
     static const int kReadEvent;
     static const int kWriteEvent;
-    EventLoop *loop_; // 事件循环
+    EventLoop *loop_; // 所在的事件循环
     const int fd_;    // fd，Poller监听的对象
     int events_;      // 注册fd感兴趣的事件
     int revents_;     // poller返回的具体发生的事件
-    int index_;
+    int index_;       // 此channel目前的状态
 
     std::weak_ptr<void> tie_;
     bool tied_;

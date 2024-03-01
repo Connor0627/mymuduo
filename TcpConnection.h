@@ -58,8 +58,8 @@ class TcpConnection : noncopyable,
     // 应用写的快，内核发送慢，需要把待发送数据写入缓冲区，并设置水位回调
     void sendInLoop(const void *message, size_t len);
     void shutdownInLoop();
-    EventLoop *
-        loop_; // 这里绝对不是baseloop，因为TcpConnection都是在subloop里面管理的
+    EventLoop
+        *loop_; // 这里不是baseloop，因为TcpConnection都是在subloop里面管理的
     const std::string name_;
     std::atomic_int state_;
     bool reading_;

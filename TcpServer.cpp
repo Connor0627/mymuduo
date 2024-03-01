@@ -18,7 +18,7 @@ TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr,
       name_(nameArg),
       acceptor_(new Acceptor(loop, listenAddr, option == kReusePort)),
       threadPool_(new EventLoopThreadPool(loop, name_)), connectionCallback_(),
-      messageCallback_(), nextConnId_(1) {
+      messageCallback_(), nextConnId_(1), started_(0) {
     // 当有新用户连接时，会执行TcpServer::newConnection回调
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection,
                                                   this, std::placeholders::_1,
@@ -37,12 +37,12 @@ TcpServer::~TcpServer() {
 
 void TcpServer::setThreadNum(int numThreads) {
     threadPool_->setThreadNum(numThreads);
-    loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
 }
 
 void TcpServer::start() {
     if (started_++ == 0) { // 防止一个TcpServer对象被start多次
         threadPool_->start(threadInitCallback_); // 启动底层的loop线程池
+        loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
     }
 }
 
